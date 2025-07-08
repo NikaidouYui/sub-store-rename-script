@@ -36,6 +36,7 @@
  * [blnx]   只保留高倍率
  * [clear]  清理乱名
  * [blpx]   如果用了上面的bl参数,对保留标识后的名称分组排序,如果没用上面的bl参数单独使用blpx则不起任何作用
+ * [speed]  保留下载速度信息 如 3.4MB, 8.2MB 等
  * [blockquic] blockquic=on 阻止; blockquic=off 不阻止
  */
 
@@ -52,7 +53,8 @@ const nx = inArg.nx || false,
   debug = inArg.debug || false,
   clear = inArg.clear || false,
   addflag = inArg.flag || false,
-  nm = inArg.nm || false;
+  nm = inArg.nm || false,
+  speed = inArg.speed || false;
 
 const FGF = inArg.fgf == undefined ? " " : decodeURI(inArg.fgf),
   XHFGF = inArg.sn == undefined ? " " : decodeURI(inArg.sn),
@@ -85,9 +87,9 @@ const specialRegex = [
 const nameclear =
   /(套餐|到期|有效|剩余|版本|已用|过期|失联|测试|官方|网址|备用|群|TEST|客服|网站|获取|订阅|流量|机场|下次|官址|联系|邮箱|工单|学术|USE|USED|TOTAL|EXPIRE|EMAIL)/i;
 // prettier-ignore
-const regexArray=[/ˣ²/, /ˣ³/, /ˣ⁴/, /ˣ⁵/, /ˣ⁶/, /ˣ⁷/, /ˣ⁸/, /ˣ⁹/, /ˣ¹⁰/, /ˣ²⁰/, /ˣ³⁰/, /ˣ⁴⁰/, /ˣ⁵⁰/, /IPLC/i, /IEPL/i, /核心/, /边缘/, /高级/, /标准/, /实验/, /商宽/, /家宽/, /游戏|game/i, /购物/, /专线/, /LB/, /cloudflare/i, /\budp\b/i, /\bgpt\b/i,/udpn\b/];
+const regexArray=[/ˣ²/, /ˣ³/, /ˣ⁴/, /ˣ⁵/, /ˣ⁶/, /ˣ⁷/, /ˣ⁸/, /ˣ⁹/, /ˣ¹⁰/, /ˣ²⁰/, /ˣ³⁰/, /ˣ⁴⁰/, /ˣ⁵⁰/, /IPLC/i, /IEPL/i, /核心/, /边缘/, /高级/, /标准/, /实验/, /商宽/, /家宽/, /游戏|game/i, /购物/, /专线/, /LB/, /cloudflare/i, /\budp\b/i, /\bgpt\b/i,/udpn\b/, /\d+(\.\d+)?\s*(MB\/s|GB\/s|MB|GB|Mbps|Gbps|mb\/s|gb\/s|mb|gb|mbps|gbps)(?!\w)/i];
 // prettier-ignore
-const valueArray= [ "2×","3×","4×","5×","6×","7×","8×","9×","10×","20×","30×","40×","50×","IPLC","IEPL","Kern","Edge","Pro","Std","Exp","Biz","Fam","Game","Buy","Zx","LB","CF","UDP","GPT","UDPN"];
+const valueArray= [ "2×","3×","4×","5×","6×","7×","8×","9×","10×","20×","30×","40×","50×","IPLC","IEPL","Kern","Edge","Pro","Std","Exp","Biz","Fam","Game","Buy","Zx","LB","CF","UDP","GPT","UDPN","SPEED"];
 const nameblnx = /(高倍|(?!1)2+(x|倍)|ˣ²|ˣ³|ˣ⁴|ˣ⁵|ˣ¹⁰)/i;
 const namenx = /(高倍|(?!1)(0\.|\d)+(x|倍)|ˣ²|ˣ³|ˣ⁴|ˣ⁵|ˣ¹⁰)/i;
 const keya =
@@ -242,9 +244,26 @@ function operator(pro) {
     if (blgd) {
       regexArray.forEach((regex, index) => {
         if (regex.test(e.name)) {
-          ikeys = valueArray[index];
+          // 如果是速度正则表达式，使用实际匹配的速度值
+          if (index === regexArray.length - 1) { // 最后一个是速度正则
+            const speedMatch = e.name.match(regex);
+            if (speedMatch) {
+              ikeys = speedMatch[0];
+            }
+          } else {
+            ikeys = valueArray[index];
+          }
         }
       });
+    }
+
+    // 解析下载速度
+    let speedInfo = "";
+    if (speed) {
+      const speedMatch = e.name.match(/(\d+(?:\.\d+)?)\s*(MB\/s|GB\/s|MB|GB|Mbps|Gbps|mb\/s|gb\/s|mb|gb|mbps|gbps)(?!\w)/i);
+      if (speedMatch) {
+        speedInfo = speedMatch[0];
+      }
     }
 
     // 正则 匹配倍率
@@ -300,7 +319,7 @@ function operator(pro) {
         }
       }
       keyover = keyover
-        .concat(firstName, usflag, nNames, findKeyValue, retainKey, ikey, ikeys)
+        .concat(firstName, usflag, nNames, findKeyValue, retainKey, ikey, ikeys, speedInfo)
         .filter((k) => k !== "");
       e.name = keyover.join(FGF);
     } else {
