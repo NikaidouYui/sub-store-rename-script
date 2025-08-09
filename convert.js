@@ -245,7 +245,7 @@ const countryRegex = {
     "俄罗斯": "(?i)俄罗斯|俄|RU|Russia",
     "泰国": "(?i)泰国|泰|TH|Thailand",
     "印度": "(?i)印度|IN|India",
-    "马来西亚": "(?i)马来西亚|马来|MY|Malaysia",
+    "马来西亚": "(?i)马来西亚|马来|\\bMY\\b|Malaysia",
     "Cloudflare": "(?i)Cloudflare|CF|☁️",
 }
 

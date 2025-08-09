@@ -2,3 +2,6 @@ proxies.yaml
 *.yaml
 
 node_modules/*
+test*.js
+debug*.js
+process*.js
