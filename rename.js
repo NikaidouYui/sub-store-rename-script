@@ -26,6 +26,7 @@
  *** 前缀参数
  * [name=]  节点添加机场名称前缀；
  * [nf]     把 name= 的前缀值放在最前面
+ * [country=] 手动指定节点的国家/地区前缀，跳过自动判断；支持国家代码(us,jp,hk等)或中文名(美国,日本,香港等)
  *** 保留参数
  * [blkey=iplc+gpt+NF+IPLC] 用+号添加多个关键词 保留节点名的自定义字段 需要区分大小写!
  * 如果需要修改 保留的关键词 替换成别的 可以用 > 分割 例如 [#blkey=GPT>新名字+其他关键词] 这将把【GPT】替换成【新名字】
@@ -61,6 +62,7 @@ const FGF = inArg.fgf == undefined ? " " : decodeURI(inArg.fgf),
   FNAME = inArg.name == undefined ? "" : decodeURI(inArg.name),
   BLKEY = inArg.blkey == undefined ? "" : decodeURI(inArg.blkey),
   blockquic = inArg.blockquic == undefined ? "" : decodeURI(inArg.blockquic),
+  COUNTRY = inArg.country == undefined ? "" : decodeURI(inArg.country),
   nameMap = {
     cn: "cn",
     zh: "cn",
@@ -146,10 +148,103 @@ const rurekey = {
   SG: /^sg\|/i,
 };
 
+// 手动指定国家映射表
+const countryMap = {
+  // 英文代码映射
+  'us': '美国', 'usa': '美国', 'united states': '美国',
+  'hk': '香港', 'hong kong': '香港', 'hongkong': '香港',
+  'jp': '日本', 'japan': '日本',
+  'sg': '新加坡', 'singapore': '新加坡',
+  'kr': '韩国', 'korea': '韩国', 'south korea': '韩国',
+  'tw': '台湾', 'taiwan': '台湾',
+  'gb': '英国', 'uk': '英国', 'united kingdom': '英国',
+  'de': '德国', 'germany': '德国',
+  'fr': '法国', 'france': '法国',
+  'au': '澳大利亚', 'australia': '澳大利亚',
+  'ca': '加拿大', 'canada': '加拿大',
+  'ru': '俄罗斯', 'russia': '俄罗斯',
+  'tr': '土耳其', 'turkey': '土耳其',
+  'in': '印度', 'india': '印度',
+  'th': '泰国', 'thailand': '泰国',
+  'my': '马来', 'malaysia': '马来',
+  'ph': '菲律宾', 'philippines': '菲律宾',
+  'vn': '越南', 'vietnam': '越南',
+  'ae': '阿联酋', 'uae': '阿联酋', 'dubai': '阿联酋',
+  'nl': '荷兰', 'netherlands': '荷兰',
+  'ch': '瑞士', 'switzerland': '瑞士',
+  'it': '意大利', 'italy': '意大利',
+  'es': '西班牙', 'spain': '西班牙',
+  'br': '巴西', 'brazil': '巴西',
+  'ar': '阿根廷', 'argentina': '阿根廷',
+  'mx': '墨西哥', 'mexico': '墨西哥',
+  'za': '南非', 'south africa': '南非',
+  'eg': '埃及', 'egypt': '埃及',
+  'il': '以色列', 'israel': '以色列',
+  'pk': '巴基斯坦', 'pakistan': '巴基斯坦',
+  'bd': '孟加拉国', 'bangladesh': '孟加拉国',
+  'id': '印尼', 'indonesia': '印尼',
+  'mo': '澳门', 'macao': '澳门',
+  'kp': '朝鲜', 'north korea': '朝鲜',
+  'no': '挪威', 'norway': '挪威',
+  'se': '瑞典', 'sweden': '瑞典',
+  'dk': '丹麦', 'denmark': '丹麦',
+  'fi': '芬兰', 'finland': '芬兰',
+  'pl': '波兰', 'poland': '波兰',
+  'cz': '捷克', 'czech': '捷克',
+  'at': '奥地利', 'austria': '奥地利',
+  'be': '比利时', 'belgium': '比利时',
+  'pt': '葡萄牙', 'portugal': '葡萄牙',
+  'ie': '爱尔兰', 'ireland': '爱尔兰',
+  'is': '冰岛', 'iceland': '冰岛',
+  'lv': '拉脱维亚', 'latvia': '拉脱维亚',
+  'lt': '立陶宛', 'lithuania': '立陶宛',
+  'ee': '爱沙尼亚', 'estonia': '爱沙尼亚',
+  'ua': '乌克兰', 'ukraine': '乌克兰',
+  'by': '白俄罗斯', 'belarus': '白俄罗斯',
+  'ro': '罗马尼亚', 'romania': '罗马尼亚',
+  'bg': '保加利亚', 'bulgaria': '保加利亚',
+  'hr': '克罗地亚', 'croatia': '克罗地亚',
+  'rs': '塞尔维亚', 'serbia': '塞尔维亚',
+  'ba': '波斯尼亚和黑塞哥维那', 'bosnia': '波斯尼亚和黑塞哥维那',
+  'mk': '马其顿', 'macedonia': '马其顿',
+  'al': '阿尔巴尼亚', 'albania': '阿尔巴尼亚',
+  'gr': '希腊', 'greece': '希腊',
+  'cy': '塞浦路斯', 'cyprus': '塞浦路斯',
+  'mt': '马耳他', 'malta': '马耳他',
+  'lu': '卢森堡', 'luxembourg': '卢森堡',
+  'mc': '摩纳哥', 'monaco': '摩纳哥',
+  'ad': '安道尔', 'andorra': '安道尔',
+  'sm': '圣马力诺', 'san marino': '圣马力诺',
+  'va': '梵蒂冈', 'vatican': '梵蒂冈',
+  'li': '列支敦士登', 'liechtenstein': '列支敦士登',
+  'cf': 'Cloudflare', 'cloudflare': 'Cloudflare'
+};
+
 let GetK = false, AMK = []
 function ObjKA(i) {
   GetK = true
   AMK = Object.entries(i)
+}
+
+// 获取手动指定的国家名称
+function getManualCountry(countryInput) {
+  if (!countryInput) return "";
+  
+  const input = countryInput.toLowerCase().trim();
+  
+  // 直接查找映射表
+  if (countryMap[input]) {
+    return countryMap[input];
+  }
+  
+  // 如果输入的就是中文名，检查是否在ZH数组中
+  const zhIndex = ZH.findIndex(name => name === countryInput);
+  if (zhIndex !== -1) {
+    return countryInput;
+  }
+  
+  // 如果都没找到，返回原输入（可能用户输入了正确的中文名但不在我们的映射中）
+  return countryInput;
 }
 
 function operator(pro) {
@@ -282,21 +377,53 @@ function operator(pro) {
 
     !GetK && ObjKA(Allmap)
     
-    // 特殊处理：识别 "国家代码|ID|其他" 格式的节点名称
-    let countryCode = "";
-    const pipeMatch = e.name.match(/^([a-z]{2})\|/i);
-    if (pipeMatch) {
-      countryCode = pipeMatch[1].toUpperCase();
+    let findKey;
+    
+    // 优先检查是否有手动指定的国家
+    if (COUNTRY) {
+      const manualCountry = getManualCountry(COUNTRY);
+      if (manualCountry) {
+        // 在输出列表中查找对应的国家名称
+        const countryIndex = outList.indexOf(manualCountry);
+        if (countryIndex !== -1) {
+          findKey = [manualCountry, manualCountry];
+        } else {
+          // 如果在输出列表中没找到，尝试在所有列表中查找
+          let foundInList = false;
+          [ZH, FG, QC, EN].forEach((list, listIndex) => {
+            const index = list.indexOf(manualCountry);
+            if (index !== -1 && !foundInList) {
+              findKey = [manualCountry, outList[index]];
+              foundInList = true;
+            }
+          });
+          
+          // 如果还是没找到，直接使用手动指定的名称
+          if (!foundInList) {
+            findKey = [manualCountry, manualCountry];
+          }
+        }
+      }
     }
     
-    // 匹配 Allkey 地区
-    let findKey = AMK.find(([key]) =>
-      e.name.includes(key)
-    )
-    
-    // 如果没有找到匹配，尝试使用提取的国家代码
-    if (!findKey && countryCode) {
-      findKey = AMK.find(([key]) => key === countryCode);
+    // 如果没有手动指定或手动指定无效，则使用原有的自动识别逻辑
+    if (!findKey) {
+      // 特殊处理：识别 "国家代码|ID|其他" 格式的节点名称
+      let countryCode = "";
+      const pipeMatch = e.name.match(/^([a-z]{2})\|/i);
+      if (pipeMatch) {
+        countryCode = pipeMatch[1].toUpperCase();
+      }
+      
+      // 匹配 Allkey 地区
+      findKey = AMK.find(([key]) =>
+        e.name.includes(key)
+      )
+      
+      // 如果没有找到匹配，尝试使用提取的国家代码
+      if (!findKey && countryCode) {
+        findKey = AMK.find(([key]) => key === countryCode);
+      }
     }
     
     let firstName = "",
