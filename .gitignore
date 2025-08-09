@@ -1,1 +1,4 @@
 proxies.yaml
+*.yaml
+
+node_modules/*
