@@ -27,7 +27,7 @@ const defaultProxiesDirect = [
 ]
 
 const defaultSelector = [
-    "手动切换", "故障转移", "DIRECT"
+    "自动选择", "手动切换", "故障转移", "DIRECT"
 ];
 
 const defaultFallback = [];
@@ -379,6 +379,17 @@ function buildProxyGroups(countryList, countryProxyGroups, lowCost) {
             "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Proxy.png",
             "type": "select",
             "proxies": defaultSelector
+        },
+        {
+            "name": "自动选择",
+            "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Auto.png",
+            "type": "url-test",
+            "include-all": true,
+            "exclude-filter": "(?i)家宽|家庭|家庭宽带|商宽|商业宽带|星链|Starlink|落地|0\.[0-5]|低倍率|省流|大流量|实验性",
+            "url": "https://cp.cloudflare.com/generate_204",
+            "interval": 180,
+            "tolerance": 20,
+            "lazy": false
         },
         (landing) ? {
             "name": "落地节点",
