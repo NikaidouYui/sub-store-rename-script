@@ -17,6 +17,8 @@ const loadBalance = parseBool(inArg.loadbalance) || false,
     enableKeepAlive = parseBool(inArg.keepalive) || false;
 
 
+const vpsKeywords = `(?i)aws|google`;
+
 // 生成默认代理组
 const defaultProxies = [
     "节点选择", "手动切换", "全球直连"
@@ -34,8 +36,8 @@ const defaultFallback = [];
 
 const globalProxies = [
     "节点选择", "手动切换", "故障转移", "静态资源", "人工智能", "加密货币", "PayPal", "Telegram", "Microsoft", "Apple", "Google", "YouTube", "Netflix", "Spotify", "TikTok",
-    "E-Hentai", "PikPak", "巴哈姆特", "哔哩哔哩", "新浪微博", "Twitter(X)", "Truth Social", "学术资源", "开发者资源", "瑟琴网站", "游戏平台", "测速服务", 
-    "FCM推送", "SSH(22端口)", "Steam修复", "Play商店修复", "搜狗输入", "全球直连", "广告拦截"
+    "E-Hentai", "PikPak", "巴哈姆特", "哔哩哔哩", "新浪微博", "Twitter(X)", "Truth Social", "学术资源", "开发者资源", "瑟琴网站", "游戏平台", "测速服务",
+    "FCM推送", "SSH(22端口)", "Steam修复", "Play商店修复", "搜狗输入", "全球直连", "广告拦截", "VPS节点"
 ];
 
 const ruleProviders = {
@@ -631,6 +633,13 @@ function buildProxyGroups(countryList, countryProxyGroups, lowCost) {
                 "REJECT", "全球直连"
             ]
         },
+        {
+            "name": "VPS节点",
+            "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Server.png",
+            "type": (loadBalance) ? "load-balance" : "url-test",
+            "include-all": true,
+            "filter": vpsKeywords,
+        },
         ...countryProxyGroups,
         {
             "name": "GLOBAL",
@@ -667,6 +676,7 @@ function main(config) {
     if (lowCost) {
         countryProxies.push("低倍率节点");     // 懒得再搞一个低倍率节点组了
     }
+    countryProxies.push("VPS节点");
 
     // 将地区代理组插入默认代理组
     defaultFallback.splice(0, 0, ...countryProxies);
