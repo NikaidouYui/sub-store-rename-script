@@ -704,6 +704,7 @@ function main(config) {
     } else {
         idx = globalProxies.indexOf("节点选择");
         globalProxies.splice(idx + 1, 0, "直连家宽");
+        countryProxies.push("直连家宽");
     }
     const countryProxyGroups = buildCountryProxyGroups(targetCountryList);
     // 生成代理组
