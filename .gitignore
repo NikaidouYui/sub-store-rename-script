@@ -5,3 +5,4 @@ node_modules/*
 test*.js
 debug*.js
 process*.js
+test_output.json
