@@ -408,6 +408,13 @@ function buildProxyGroups(countryList, countryProxyGroups, lowCost) {
             "exclude-filter": "(?i)家宽|家庭|家庭宽带|商宽|商业宽带|星链|Starlink|落地",
             "proxies": defaultSelector
         } : null,
+        (!landing) ? {
+            "name": "直连家宽",
+            "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Airport.png",
+            "type": "select",
+            "include-all": true,
+            "filter": "(?i)家宽|家庭|家庭宽带|商宽|商业宽带|星链|Starlink|落地",
+        } : null,
         (lowCost) ? {
             "name": "低倍率节点",
             "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Lab.png",
@@ -694,6 +701,9 @@ function main(config) {
 
         idx = globalProxies.indexOf("节点选择");
         globalProxies.splice(idx + 1, 0, ...["落地节点", "前置代理"]);    //插入到节点选择之后
+    } else {
+        idx = globalProxies.indexOf("节点选择");
+        globalProxies.splice(idx + 1, 0, "直连家宽");
     }
     const countryProxyGroups = buildCountryProxyGroups(targetCountryList);
     // 生成代理组
