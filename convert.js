@@ -17,7 +17,7 @@ const loadBalance = parseBool(inArg.loadbalance) || false,
     enableKeepAlive = parseBool(inArg.keepalive) || false;
 
 
-const vpsKeywords = `(?i)aws|google|华为云|dmit`;
+const vpsKeywords = `(?i)aws|google|华为云|dmit|狐蒂云`;
 
 // 生成默认代理组
 const defaultProxies = [
