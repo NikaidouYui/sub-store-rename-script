@@ -701,6 +701,14 @@ function main(config) {
 
         idx = globalProxies.indexOf("节点选择");
         globalProxies.splice(idx + 1, 0, ...["落地节点", "前置代理"]);    //插入到节点选择之后
+
+        // 为落地节点添加 dialer-proxy，实现链式代理
+        const landingRegex = /家宽|家庭|家庭宽带|商宽|商业宽带|星链|Starlink|落地/i;
+        for (const proxy of config.proxies) {
+            if (landingRegex.test(proxy.name)) {
+                proxy["dialer-proxy"] = "前置代理";
+            }
+        }
     } else {
         // 当 landing=false 时，添加“直连家宽”
         globalProxies.push("直连家宽");
