@@ -465,6 +465,7 @@ function buildProxyGroups(countryList, countryProxyGroups, lowCost) {
           type: "select",
           "include-all": true,
           filter: "(?i)家宽|家庭|家庭宽带|商宽|商业宽带|星链|Starlink|落地",
+          "dialer-proxy": "前置代理",
         }
       : null,
     landing
@@ -475,9 +476,7 @@ function buildProxyGroups(countryList, countryProxyGroups, lowCost) {
           "include-all": true,
           "exclude-filter":
             "(?i)家宽|家庭|家庭宽带|商宽|商业宽带|星链|Starlink|落地",
-          proxies: defaultSelector.filter(
-            (n) => n !== "落地节点" && n !== "直连家宽"
-          ),
+          proxies: defaultSelector,
         }
       : null,
     {
@@ -781,13 +780,7 @@ function main(config) {
     idx = globalProxies.indexOf("节点选择");
     globalProxies.splice(idx + 1, 0, ...["落地节点", "直连家宽", "前置代理"]); //插入到节点选择之后
 
-    // 为落地节点添加 dialer-proxy，实现链式代理
-    const landingRegex = /家宽|家庭|家庭宽带|商宽|商业宽带|星链|Starlink|落地/i;
-    for (const proxy of config.proxies) {
-      if (landingRegex.test(proxy.name)) {
-        proxy["dialer-proxy"] = "前置代理";
-      }
-    }
+    // dialer-proxy 已在代理组级别设置，无需在节点级别设置
   } else {
     // 当 landing=false 时，添加“直连家宽”
     globalProxies.push("直连家宽");
