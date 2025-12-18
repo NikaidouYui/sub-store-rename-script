@@ -475,7 +475,9 @@ function buildProxyGroups(countryList, countryProxyGroups, lowCost) {
           "include-all": true,
           "exclude-filter":
             "(?i)家宽|家庭|家庭宽带|商宽|商业宽带|星链|Starlink|落地",
-          proxies: defaultSelector,
+          proxies: defaultSelector.filter(
+            (n) => n !== "落地节点" && n !== "直连家宽"
+          ),
         }
       : null,
     {
