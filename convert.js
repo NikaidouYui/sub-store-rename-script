@@ -479,9 +479,21 @@ function buildProxyGroups(countryList, countryProxyGroups, lowCost) {
         }
       : null,
     {
+      name: "自动直连家宽",
+      icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Auto.png",
+      type: "url-test",
+      "include-all": true,
+      filter: "(?i)家宽|家庭|家庭宽带|商宽|商业宽带|星链|Starlink|落地",
+      url: "https://cp.cloudflare.com/generate_204",
+      interval: 180,
+      tolerance: 20,
+      lazy: false,
+    },
+    {
       name: "直连家宽",
       icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Airport.png",
       type: "select",
+      proxies: ["自动直连家宽"],
       "include-all": true,
       filter: "(?i)家宽|家庭|家庭宽带|商宽|商业宽带|星链|Starlink|落地",
     },
