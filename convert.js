@@ -777,8 +777,9 @@ function main(config) {
   }
   // else {
   // 当 landing=false 时，添加“直连家宽”
+  defaultProxies.splice(idx + 1, 0, "直连家宽");
   globalProxies.push("直连家宽");
-  defaultProxies.push("直连家宽");
+  //   defaultProxies.push("直连家宽");
   defaultSelector.push("直连家宽");
   defaultFallback.push("直连家宽");
   defaultProxiesDirect.push("直连家宽");
