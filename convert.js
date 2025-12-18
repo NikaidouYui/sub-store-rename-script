@@ -464,8 +464,9 @@ function buildProxyGroups(countryList, countryProxyGroups, lowCost) {
           icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Airport.png",
           type: "select",
           "include-all": true,
-          filter: "(?i)家宽|家庭|家庭宽带|商宽|商业宽带|星链|Starlink|落地",
-          "dialer-proxy": "前置代理",
+          filter:
+            "(?i)(?<!\\[直连\\])(家宽|家庭|家庭宽带|商宽|商业宽带|星链|Starlink|落地)",
+          "exclude-filter": "(?i)\\[直连\\]",
         }
       : null,
     landing
@@ -484,7 +485,9 @@ function buildProxyGroups(countryList, countryProxyGroups, lowCost) {
       icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Auto.png",
       type: "url-test",
       "include-all": true,
-      filter: "(?i)家宽|家庭|家庭宽带|商宽|商业宽带|星链|Starlink|落地",
+      filter: landing
+        ? "(?i)\\[直连\\]"
+        : "(?i)家宽|家庭|家庭宽带|商宽|商业宽带|星链|Starlink|落地",
       url: "https://cp.cloudflare.com/generate_204",
       interval: 180,
       tolerance: 20,
@@ -496,7 +499,9 @@ function buildProxyGroups(countryList, countryProxyGroups, lowCost) {
       type: "select",
       proxies: ["自动直连家宽"],
       "include-all": true,
-      filter: "(?i)家宽|家庭|家庭宽带|商宽|商业宽带|星链|Starlink|落地",
+      filter: landing
+        ? "(?i)\\[直连\\]"
+        : "(?i)家宽|家庭|家庭宽带|商宽|商业宽带|星链|Starlink|落地",
     },
     lowCost
       ? {
@@ -780,7 +785,22 @@ function main(config) {
     idx = globalProxies.indexOf("节点选择");
     globalProxies.splice(idx + 1, 0, ...["落地节点", "直连家宽", "前置代理"]); //插入到节点选择之后
 
-    // dialer-proxy 已在代理组级别设置，无需在节点级别设置
+    // 复制家宽节点用于直连，原始节点设置 dialer-proxy 用于落地
+    const landingRegex = /家宽|家庭|家庭宽带|商宽|商业宽带|星链|Starlink|落地/i;
+    const directProxies = [];
+    for (const proxy of config.proxies) {
+      if (landingRegex.test(proxy.name)) {
+        // 原始节点设置 dialer-proxy
+        proxy["dialer-proxy"] = "前置代理";
+        // 复制一份用于直连（不带 dialer-proxy）
+        const directProxy = { ...proxy };
+        delete directProxy["dialer-proxy"];
+        directProxy.name = `[直连]${proxy.name}`;
+        directProxies.push(directProxy);
+      }
+    }
+    // 将直连节点添加到配置中
+    config.proxies.push(...directProxies);
   } else {
     // 当 landing=false 时，添加“直连家宽”
     globalProxies.push("直连家宽");
