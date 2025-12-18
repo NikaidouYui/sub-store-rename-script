@@ -759,13 +759,13 @@ function main(config) {
   // 处理落地
   if (landing) {
     idx = defaultProxies.indexOf("节点选择");
-    defaultProxies.splice(idx + 1, 0, "落地节点"); //插入到节点选择之后
+    defaultProxies.splice(idx + 1, 0, "落地节点", "直连家宽"); //插入到节点选择之后
 
-    defaultSelector.unshift("落地节点");
-    defaultFallback.unshift("落地节点");
+    defaultSelector.unshift("落地节点", "直连家宽");
+    defaultFallback.unshift("落地节点", "直连家宽");
 
     idx = globalProxies.indexOf("节点选择");
-    globalProxies.splice(idx + 1, 0, ...["落地节点", "前置代理"]); //插入到节点选择之后
+    globalProxies.splice(idx + 1, 0, ...["落地节点", "直连家宽", "前置代理"]); //插入到节点选择之后
 
     // 为落地节点添加 dialer-proxy，实现链式代理
     const landingRegex = /家宽|家庭|家庭宽带|商宽|商业宽带|星链|Starlink|落地/i;
@@ -774,16 +774,14 @@ function main(config) {
         proxy["dialer-proxy"] = "前置代理";
       }
     }
+  } else {
+    // 当 landing=false 时，添加“直连家宽”
+    globalProxies.push("直连家宽");
+    defaultProxies.push("直连家宽");
+    defaultSelector.push("直连家宽");
+    defaultFallback.push("直连家宽");
   }
-  // else {
-  // 当 landing=false 时，添加“直连家宽”
-  defaultProxies.splice(idx + 1, 0, "直连家宽");
-  globalProxies.push("直连家宽");
-  //   defaultProxies.push("直连家宽");
-  defaultSelector.push("直连家宽");
-  defaultFallback.push("直连家宽");
   defaultProxiesDirect.push("直连家宽");
-  // }
 
   const countryProxyGroups = buildCountryProxyGroups(targetCountryList);
   const proxyGroups = buildProxyGroups(
