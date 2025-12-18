@@ -454,7 +454,7 @@ function buildProxyGroups(countryList, countryProxyGroups, lowCost) {
       "exclude-filter":
         "(?i)家宽|家庭|家庭宽带|商宽|商业宽带|星链|Starlink|落地|0.[0-5]|低倍率|省流|大流量|实验性",
       url: "https://cp.cloudflare.com/generate_204",
-      interval: 180,
+      interval: 500,
       tolerance: 20,
       lazy: false,
     },
