@@ -496,11 +496,7 @@ function buildProxyGroups(countryList, countryProxyGroups, lowCost) {
     {
       name: "直连家宽",
       icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Airport.png",
-      type: "url-test",
-      url: "https://cp.cloudflare.com/generate_204",
-      interval: 180,
-      tolerance: 20,
-      lazy: false,
+      type: "select",
       // proxies: ["自动直连家宽"],
       "include-all": true,
       filter: landing
