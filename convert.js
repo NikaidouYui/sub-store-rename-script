@@ -496,7 +496,7 @@ function buildProxyGroups(countryList, countryProxyGroups, lowCost) {
     {
       name: "直连家宽",
       icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Airport.png",
-      type: "load-balance",
+      type: "select",
       // proxies: ["自动直连家宽"],
       "include-all": true,
       filter: landing
