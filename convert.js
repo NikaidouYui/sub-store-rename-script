@@ -374,6 +374,81 @@ function parseCountries(config) {
   return result; // [{ country: 'Japan', count: 12 }, ...]
 }
 
+/**
+ * 解析节点名称中的 [] 内容，提取机场/供应商标识
+ * @param {Object} config - 配置对象
+ * @returns {Array} - 供应商列表 [{provider: '乐猫', count: 10}, ...]
+ */
+function parseProviders(config) {
+  const proxies = config.proxies || [];
+  const providerCounts = Object.create(null);
+
+  // 匹配 [] 或【】内的内容
+  const providerRegex = /[\[【]([^\]】]+)[\]】]/;
+
+  for (const proxy of proxies) {
+    const name = proxy.name || "";
+    const match = name.match(providerRegex);
+    if (match && match[1]) {
+      const provider = match[1].trim();
+      providerCounts[provider] = (providerCounts[provider] || 0) + 1;
+    }
+  }
+
+  // 转成数组形式，按节点数量降序排列
+  const result = [];
+  for (const [provider, count] of Object.entries(providerCounts)) {
+    result.push({ provider, count });
+  }
+  result.sort((a, b) => b.count - a.count);
+
+  return result; // [{ provider: '乐猫', count: 10 }, ...]
+}
+
+/**
+ * 为供应商生成策略组
+ * @param {Array} providerList - 供应商名称列表
+ * @returns {Array} - 供应商策略组配置
+ */
+function buildProviderProxyGroups(providerList) {
+  const providerProxyGroups = [];
+
+  for (const provider of providerList) {
+    const groupName = `[${provider}]`;
+    const filterPattern = `(?i)\\[${escapeRegExp(provider)}\\]|【${escapeRegExp(provider)}】`;
+
+    const groupConfig = {
+      name: groupName,
+      icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Server.png",
+      "include-all": true,
+      filter: filterPattern,
+      type: loadBalance ? "load-balance" : "url-test",
+    };
+
+    if (!loadBalance) {
+      Object.assign(groupConfig, {
+        url: "http://www.gstatic.com/generate_204",
+        interval: 180,
+        tolerance: 20,
+        lazy: false,
+      });
+    }
+
+    providerProxyGroups.push(groupConfig);
+  }
+
+  return providerProxyGroups;
+}
+
+/**
+ * 转义正则表达式特殊字符
+ * @param {string} string - 需要转义的字符串
+ * @returns {string} - 转义后的字符串
+ */
+function escapeRegExp(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 function buildCountryProxyGroups(countryList) {
   const countryIconURLs = {
     香港: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Hong_Kong.png",
@@ -437,7 +512,7 @@ function buildCountryProxyGroups(countryList) {
   return countryProxyGroups;
 }
 
-function buildProxyGroups(countryList, countryProxyGroups, lowCost) {
+function buildProxyGroups(countryList, countryProxyGroups, providerProxyGroups, lowCost) {
   // 查看是否有特定地区的节点
   const hasTW = countryList.includes("台湾");
   const hasHK = countryList.includes("香港");
@@ -757,6 +832,7 @@ function buildProxyGroups(countryList, countryProxyGroups, lowCost) {
       filter: vpsKeywords,
     },
     ...countryProxyGroups,
+    ...providerProxyGroups,
     {
       name: "GLOBAL",
       icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Global.png",
@@ -836,10 +912,33 @@ function main(config) {
   }
   defaultProxiesDirect.push("直连家宽");
 
+  // 解析供应商（机场）信息
+  const providerInfo = parseProviders(config);
+  const targetProviderList = [];
+  const providerProxies = [];
+
+  for (const { provider, count } of providerInfo) {
+    if (count > 2) {
+      // 仅为节点数大于 2 的供应商创建节点组
+      const groupName = `[${provider}]`;
+      globalProxies.push(groupName);
+      providerProxies.push(groupName);
+      targetProviderList.push(provider);
+    }
+  }
+
+  // 将供应商代理组添加到默认代理组选项中
+  defaultProxies.push(...providerProxies);
+  defaultSelector.push(...providerProxies);
+  defaultFallback.push(...providerProxies);
+  defaultProxiesDirect.push(...providerProxies);
+
   const countryProxyGroups = buildCountryProxyGroups(targetCountryList);
+  const providerProxyGroups = buildProviderProxyGroups(targetProviderList);
   const proxyGroups = buildProxyGroups(
     targetCountryList,
     countryProxyGroups,
+    providerProxyGroups,
     lowCost
   );
 
