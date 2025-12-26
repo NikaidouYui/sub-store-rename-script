@@ -16,7 +16,7 @@ const loadBalance = parseBool(inArg.loadbalance) || false,
   ipv6Enabled = parseBool(inArg.ipv6) || false,
   fullConfig = parseBool(inArg.full) || false,
   enableKeepAlive = parseBool(inArg.keepalive) || false,
-  relayKeyword = inArg.relay || "dmit";
+  relayKeyword = inArg.relay || "dmit|google";
 
 const vpsKeywords = `(?i)aws|google|华为云|dmit|狐蒂云|gcp`;
 
@@ -34,6 +34,7 @@ const globalProxies = [
   "手动切换",
   "故障转移",
   "中转代理",
+  "GCP代理",
   "静态资源",
   "人工智能",
   "加密货币",
@@ -422,7 +423,7 @@ function buildCountryProxyGroups(countryList) {
 
       if (!loadBalance) {
         Object.assign(groupConfig, {
-          url: "https://cp.cloudflare.com/generate_204",
+          url: "http://www.gstatic.com/generate_204",
           interval: 180,
           tolerance: 20,
           lazy: false,
@@ -456,7 +457,7 @@ function buildProxyGroups(countryList, countryProxyGroups, lowCost) {
       "include-all": true,
       "exclude-filter":
         "(?i)家宽|家庭|家庭宽带|商宽|商业宽带|星链|Starlink|落地|0.[0-5]|低倍率|省流|大流量|实验性",
-      url: "https://cp.cloudflare.com/generate_204",
+      url: "http://www.gstatic.com/generate_204",
       interval: 500,
       tolerance: 20,
       lazy: false,
@@ -491,7 +492,7 @@ function buildProxyGroups(countryList, countryProxyGroups, lowCost) {
     //   filter: landing
     //     ? "(?i)\\[直连\\]"
     //     : "(?i)家宽|家庭|家庭宽带|商宽|商业宽带|星链|Starlink|落地",
-    //   url: "https://cp.cloudflare.com/generate_204",
+    //   url: "http://www.gstatic.com/generate_204",
     //   interval: 180,
     //   tolerance: 20,
     //   lazy: false,
@@ -525,7 +526,7 @@ function buildProxyGroups(countryList, countryProxyGroups, lowCost) {
       name: "故障转移",
       icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Bypass.png",
       type: "fallback",
-      url: "https://cp.cloudflare.com/generate_204",
+      url: "http://www.gstatic.com/generate_204",
       proxies: defaultFallback,
       interval: 180,
       tolerance: 20,
@@ -537,7 +538,18 @@ function buildProxyGroups(countryList, countryProxyGroups, lowCost) {
       type: "fallback",
       "include-all": true,
       filter: `(?i)${relayKeyword}`,
-      url: "https://cp.cloudflare.com/generate_204",
+      url: "http://www.gstatic.com/generate_204",
+      interval: 180,
+      tolerance: 20,
+      lazy: false,
+    },
+    {
+      name: "GCP代理",
+      icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Google_Search.png",
+      type: "fallback",
+      "include-all": true,
+      filter: "(?i)google",
+      url: "http://www.gstatic.com/generate_204",
       interval: 180,
       tolerance: 20,
       lazy: false,
