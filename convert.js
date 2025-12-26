@@ -534,7 +534,7 @@ function buildProxyGroups(countryList, countryProxyGroups, lowCost) {
     },
     {
       name: "中转代理",
-      icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Relay.png",
+      icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Auto.png",
       type: "fallback",
       "include-all": true,
       filter: `(?i)${relayKeyword}`,
