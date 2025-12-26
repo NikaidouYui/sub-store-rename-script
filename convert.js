@@ -21,11 +21,11 @@ const loadBalance = parseBool(inArg.loadbalance) || false,
 const vpsKeywords = `(?i)aws|google|华为云|dmit|狐蒂云|gcp`;
 
 // 生成默认代理组
-const defaultProxies = ["节点选择", "手动切换", "全球直连"];
+const defaultProxies = ["节点选择", "GCP节点", "手动切换", "全球直连"];
 
-const defaultProxiesDirect = ["全球直连", "节点选择", "手动切换"];
+const defaultProxiesDirect = ["全球直连", "节点选择", "GCP节点", "手动切换"];
 
-const defaultSelector = ["自动选择", "手动切换", "故障转移", "DIRECT"];
+const defaultSelector = ["自动选择", "GCP节点", "手动切换", "故障转移", "DIRECT"];
 
 const defaultFallback = [];
 
@@ -34,7 +34,7 @@ const globalProxies = [
   "手动切换",
   "故障转移",
   "中转代理",
-  "GCP代理",
+  "GCP节点",
   "静态资源",
   "人工智能",
   "加密货币",
@@ -481,7 +481,7 @@ function buildProxyGroups(countryList, countryProxyGroups, lowCost) {
           "include-all": true,
           "exclude-filter":
             "(?i)家宽|家庭|家庭宽带|商宽|商业宽带|星链|Starlink|落地",
-          proxies: defaultSelector,
+          proxies: ["中转代理", ...defaultSelector],
         }
       : null,
     // {
@@ -544,7 +544,7 @@ function buildProxyGroups(countryList, countryProxyGroups, lowCost) {
       lazy: false,
     },
     {
-      name: "GCP代理",
+      name: "GCP节点",
       icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Google_Search.png",
       type: "fallback",
       "include-all": true,
