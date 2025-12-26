@@ -7,6 +7,7 @@ https://github.com/powerfullz/override-rules
 - ipv6: 启用 IPv6 支持 (默认false)
 - full: 启用完整配置，用于纯内核启动 (默认false)
 - keepalive: 启用 tcp-keep-alive (默认false)
+- relay: 中转代理组节点筛选关键字 (默认dmit)
 */
 
 const inArg = $arguments; // console.log(inArg)
@@ -14,7 +15,8 @@ const loadBalance = parseBool(inArg.loadbalance) || false,
   landing = parseBool(inArg.landing) || false,
   ipv6Enabled = parseBool(inArg.ipv6) || false,
   fullConfig = parseBool(inArg.full) || false,
-  enableKeepAlive = parseBool(inArg.keepalive) || false;
+  enableKeepAlive = parseBool(inArg.keepalive) || false,
+  relayKeyword = inArg.relay || "dmit";
 
 const vpsKeywords = `(?i)aws|google|华为云|dmit|狐蒂云|gcp`;
 
@@ -31,6 +33,7 @@ const globalProxies = [
   "节点选择",
   "手动切换",
   "故障转移",
+  "中转代理",
   "静态资源",
   "人工智能",
   "加密货币",
@@ -524,6 +527,17 @@ function buildProxyGroups(countryList, countryProxyGroups, lowCost) {
       type: "fallback",
       url: "https://cp.cloudflare.com/generate_204",
       proxies: defaultFallback,
+      interval: 180,
+      tolerance: 20,
+      lazy: false,
+    },
+    {
+      name: "中转代理",
+      icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Relay.png",
+      type: "fallback",
+      "include-all": true,
+      filter: `(?i)${relayKeyword}`,
+      url: "https://cp.cloudflare.com/generate_204",
       interval: 180,
       tolerance: 20,
       lazy: false,
