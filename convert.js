@@ -537,6 +537,12 @@ function buildProxyGroups(countryList, countryProxyGroups, providerProxyGroups, 
       tolerance: 20,
       lazy: false,
     },
+    {
+      name: "大流量下载",
+      icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Download.png",
+      type: "select",
+      proxies: ["GCP节点", "中转代理", ...providerProxyGroups.map((p) => p.name)],
+    },
     landing
       ? {
           name: "落地节点",
@@ -932,6 +938,14 @@ function main(config) {
   defaultSelector.push(...providerProxies);
   defaultFallback.push(...providerProxies);
   defaultProxiesDirect.push(...providerProxies);
+
+  // 添加大流量下载分组
+  const highTrafficName = "大流量下载";
+  globalProxies.push(highTrafficName);
+  // 插入到靠前位置
+  defaultProxies.splice(1, 0, highTrafficName);
+  defaultSelector.splice(1, 0, highTrafficName);
+  defaultProxiesDirect.splice(2, 0, highTrafficName);
 
   const countryProxyGroups = buildCountryProxyGroups(targetCountryList);
   const providerProxyGroups = buildProviderProxyGroups(targetProviderList);
