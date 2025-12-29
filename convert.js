@@ -526,6 +526,12 @@ function buildProxyGroups(countryList, countryProxyGroups, providerProxyGroups, 
       proxies: defaultSelector,
     },
     {
+      name: "大流量下载",
+      icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Download.png",
+      type: "select",
+      proxies: ["GCP节点", "中转代理", ...providerProxyGroups.map((p) => p.name)],
+    },
+    {
       name: "自动选择",
       icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Auto.png",
       type: "url-test",
@@ -536,12 +542,6 @@ function buildProxyGroups(countryList, countryProxyGroups, providerProxyGroups, 
       interval: 500,
       tolerance: 20,
       lazy: false,
-    },
-    {
-      name: "大流量下载",
-      icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Download.png",
-      type: "select",
-      proxies: ["GCP节点", "中转代理", ...providerProxyGroups.map((p) => p.name)],
     },
     landing
       ? {
