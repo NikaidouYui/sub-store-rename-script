@@ -118,6 +118,14 @@ const ruleProviders = {
     url: "https://ruleset.skk.moe/Clash/non_ip/ai.txt",
     path: "./ruleset/AI.txt",
   },
+  Copilot: {
+    type: "http",
+    behavior: "classical",
+    format: "yaml",
+    interval: 86400,
+    url: "https://testingcf.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Copilot/Copilot.yaml",
+    path: "./ruleset/Copilot.yaml",
+  },
   TikTok: {
     type: "http",
     behavior: "classical",
@@ -201,6 +209,7 @@ const rules = [
   "RULE-SET,CDNResources,静态资源",
   "RULE-SET,AdditionalCDNResources,静态资源",
   "RULE-SET,AI,人工智能",
+  "RULE-SET,Copilot,人工智能",
   "RULE-SET,EHentai,E-Hentai",
   "RULE-SET,TikTok,TikTok",
   "RULE-SET,SteamFix,Steam修复",
