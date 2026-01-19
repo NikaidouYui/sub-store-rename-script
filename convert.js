@@ -118,14 +118,14 @@ const ruleProviders = {
     url: "https://ruleset.skk.moe/Clash/non_ip/ai.txt",
     path: "./ruleset/AI.txt",
   },
-  Copilot: {
-    type: "http",
-    behavior: "classical",
-    format: "yaml",
-    interval: 86400,
-    url: "https://testingcf.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Copilot/Copilot.yaml",
-    path: "./ruleset/Copilot.yaml",
-  },
+  // Copilot: {
+  //   type: "http",
+  //   behavior: "classical",
+  //   format: "yaml",
+  //   interval: 86400,
+  //   url: "https://testingcf.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Copilot/Copilot.yaml",
+  //   path: "./ruleset/Copilot.yaml",
+  // },
   TikTok: {
     type: "http",
     behavior: "classical",
