@@ -41,6 +41,7 @@ const globalProxies = [
   "PayPal",
   "Telegram",
   "Microsoft",
+  "OneDrive",
   "Apple",
   "Google",
   "YouTube",
@@ -198,6 +199,14 @@ const ruleProviders = {
     url: "https://ruleset.skk.moe/Clash/domainset/speedtest.txt",
     path: "./ruleset/SpeedTest.list",
   },
+  OneDrive: {
+    type: "http",
+    behavior: "classical",
+    format: "text",
+    interval: 86400,
+    url: "https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Loon/OneDrive/OneDrive.list",
+    path: "./ruleset/OneDrive.list",
+  },
 };
 
 const rules = [
@@ -240,6 +249,7 @@ const rules = [
   "GEOSITE,CATEGORY-CRYPTOCURRENCY,加密货币",
   "GEOSITE,MICROSOFT@CN,全球直连",
   "GEOSITE,MICROSOFT,Microsoft",
+  "RULE-SET,OneDrive,OneDrive",
   "GEOSITE,PIKPAK,PikPak",
   "GEOSITE,CN,全球直连",
   "GEOSITE,PRIVATE,全球直连",
@@ -680,6 +690,12 @@ function buildProxyGroups(countryList, countryProxyGroups, providerProxyGroups, 
     {
       name: "Microsoft",
       icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Microsoft.png",
+      type: "select",
+      proxies: defaultProxies,
+    },
+    {
+      name: "OneDrive",
+      icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/OneDrive.png",
       type: "select",
       proxies: defaultProxies,
     },
