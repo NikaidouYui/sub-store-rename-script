@@ -209,7 +209,7 @@ const rules = [
   "RULE-SET,CDNResources,静态资源",
   "RULE-SET,AdditionalCDNResources,静态资源",
   "RULE-SET,AI,人工智能",
-  "RULE-SET,Copilot,人工智能",
+  // "RULE-SET,Copilot,人工智能",
   "RULE-SET,EHentai,E-Hentai",
   "RULE-SET,TikTok,TikTok",
   "RULE-SET,SteamFix,Steam修复",
