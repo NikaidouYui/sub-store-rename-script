@@ -222,6 +222,7 @@ const ruleProviders = {
 const rules = [
   "RULE-SET,ADBlock,广告拦截",
   "RULE-SET,WhatsApp,WhatsApp",
+  "GEOSITE,FACEBOOK,节点选择",
   "RULE-SET,AdditionalFilter,广告拦截",
   "RULE-SET,SogouInput,搜狗输入",
   "RULE-SET,TruthSocial,Truth Social",
