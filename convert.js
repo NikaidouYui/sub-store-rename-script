@@ -870,7 +870,7 @@ function buildProxyGroups(countryList, countryProxyGroups, providerProxyGroups, 
       name: "WhatsApp",
       icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/WhatsApp.png",
       type: "select",
-      proxies: ["REJECT", "全球直连"],
+      proxies: defaultProxies,
     },
     {
       name: "VPS节点",
