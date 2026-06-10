@@ -580,7 +580,7 @@ function buildProxyGroups(countryList, countryProxyGroups, providerProxyGroups, 
           type: "select",
           "include-all": true,
           filter:
-            "(?i)(?<!\\[直连\\])(家宽|家庭|家庭宽带|商宽|商业宽带|星链|Starlink|落地)",
+            "(?i)(家宽|家庭|家庭宽带|商宽|商业宽带|星链|Starlink|落地)",
           "exclude-filter": "(?i)\\[直连\\]",
         }
       : null,
@@ -592,7 +592,7 @@ function buildProxyGroups(countryList, countryProxyGroups, providerProxyGroups, 
           "include-all": true,
           "exclude-filter":
             "(?i)家宽|家庭|家庭宽带|商宽|商业宽带|星链|Starlink|落地",
-          proxies: ["中转代理", ...defaultSelector],
+          proxies: ["中转代理", ...defaultSelector.filter(p => p !== "落地节点" && p !== "直连家宽")],
         }
       : null,
     // {
@@ -868,7 +868,7 @@ function buildProxyGroups(countryList, countryProxyGroups, providerProxyGroups, 
     },
     {
       name: "WhatsApp",
-      icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/WhatsApp.png",
+      icon: "https://cdn.jsdelivr.net/gh/Orz-3/mini@master/Color/WhatsApp.png",
       type: "select",
       proxies: defaultProxies,
     },
@@ -926,7 +926,7 @@ function main(config) {
 
   // 处理落地
   if (landing) {
-    idx = defaultProxies.indexOf("节点选择");
+    let idx = defaultProxies.indexOf("节点选择");
     defaultProxies.splice(idx + 1, 0, "落地节点", "直连家宽"); //插入到节点选择之后
 
     defaultSelector.unshift("落地节点", "直连家宽");
