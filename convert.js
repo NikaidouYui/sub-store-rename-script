@@ -68,6 +68,7 @@ const globalProxies = [
   "全球直连",
   "广告拦截",
   "VPS节点",
+  "WhatsApp",
 ];
 
 const ruleProviders = {
@@ -218,6 +219,7 @@ const ruleProviders = {
 
 const rules = [
   "RULE-SET,ADBlock,广告拦截",
+  "RULE-SET,WhatsApp,WhatsApp",
   "RULE-SET,AdditionalFilter,广告拦截",
   "RULE-SET,SogouInput,搜狗输入",
   "RULE-SET,TruthSocial,Truth Social",
@@ -859,6 +861,12 @@ function buildProxyGroups(countryList, countryProxyGroups, providerProxyGroups, 
     {
       name: "广告拦截",
       icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/AdBlack.png",
+      type: "select",
+      proxies: ["REJECT", "全球直连"],
+    },
+    {
+      name: "WhatsApp",
+      icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/WhatsApp.png",
       type: "select",
       proxies: ["REJECT", "全球直连"],
     },
