@@ -207,6 +207,13 @@ const ruleProviders = {
     url: "https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Loon/OneDrive/OneDrive.list",
     path: "./ruleset/OneDrive.list",
   },
+  WhatsApp:{
+    type: "http",
+    behavior: "classical",
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/rule/Clash/Whatsapp/Whatsapp.list",
+    path: "./ruleset/whatsapp.list",
+    interval: 86400
+},
 };
 
 const rules = [
