@@ -205,7 +205,7 @@ const ruleProviders = {
     behavior: "classical",
     format: "text",
     interval: 86400,
-    url: "https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Loon/OneDrive/OneDrive.list",
+    url: "https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/OneDrive/OneDrive.list",
     path: "./ruleset/OneDrive.list",
   },
   WhatsApp:{
@@ -260,6 +260,7 @@ const rules = [
   "GEOSITE,CATEGORY-SCHOLAR-CN,全球直连",
   "GEOSITE,CATEGORY-CRYPTOCURRENCY,加密货币",
   "RULE-SET,OneDrive,OneDrive",
+  "GEOSITE,ONEDRIVE,OneDrive",
   "GEOSITE,MICROSOFT@CN,全球直连",
   "GEOSITE,MICROSOFT,Microsoft",
   "GEOSITE,PIKPAK,PikPak",
