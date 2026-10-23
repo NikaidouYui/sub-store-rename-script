@@ -460,9 +460,9 @@ function buildProviderProxyGroups(providerList) {
     if (!loadBalance) {
       Object.assign(groupConfig, {
         url: "http://www.gstatic.com/generate_204",
-        interval: 180,
+        interval: 300,
         tolerance: 20,
-        lazy: false,
+        lazy: true,
       });
     }
 
@@ -531,9 +531,9 @@ function buildCountryProxyGroups(countryList) {
       if (!loadBalance) {
         Object.assign(groupConfig, {
           url: "http://www.gstatic.com/generate_204",
-          interval: 180,
+          interval: 300,
           tolerance: 20,
-          lazy: false,
+          lazy: true,
         });
       }
 
@@ -573,7 +573,7 @@ function buildProxyGroups(countryList, countryProxyGroups, providerProxyGroups, 
       url: "http://www.gstatic.com/generate_204",
       interval: 500,
       tolerance: 20,
-      lazy: false,
+      lazy: true,
     },
     landing
       ? {
@@ -641,9 +641,9 @@ function buildProxyGroups(countryList, countryProxyGroups, providerProxyGroups, 
       type: "fallback",
       url: "http://www.gstatic.com/generate_204",
       proxies: defaultFallback,
-      interval: 180,
+      interval: 300,
       tolerance: 20,
-      lazy: false,
+      lazy: true,
     },
     {
       name: "中转代理",
@@ -652,9 +652,9 @@ function buildProxyGroups(countryList, countryProxyGroups, providerProxyGroups, 
       "include-all": true,
       filter: `(?i)${relayKeyword}`,
       url: "http://www.gstatic.com/generate_204",
-      interval: 180,
+      interval: 300,
       tolerance: 20,
-      lazy: false,
+      lazy: true,
     },
     {
       name: "GCP节点",
@@ -663,9 +663,9 @@ function buildProxyGroups(countryList, countryProxyGroups, providerProxyGroups, 
       "include-all": true,
       filter: "(?i)google",
       url: "http://www.gstatic.com/generate_204",
-      interval: 180,
+      interval: 300,
       tolerance: 20,
-      lazy: false,
+      lazy: true,
     },
     {
       name: "静态资源",
