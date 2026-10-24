@@ -25,7 +25,7 @@ const defaultProxies = ["节点选择", "GCP节点", "手动切换", "全球直�
 
 const defaultProxiesDirect = ["全球直连", "节点选择", "GCP节点", "手动切换"];
 
-const defaultSelector = ["自动选择", "GCP节点", "手动切换", "故障转移", "DIRECT"];
+const defaultSelector = ["自动选择", "手动切换", "GCP节点", "故障转移", "DIRECT"];
 
 const defaultFallback = [];
 
@@ -937,7 +937,7 @@ function main(config) {
   // 将地区代理组插入默认代理组
   defaultFallback.splice(0, 0, ...countryProxies);
   defaultProxies.splice(1, 0, ...countryProxies); // 插入节点选择的后面
-  defaultSelector.splice(1, 0, ...countryProxies); // 在第二个位置插入
+  defaultSelector.splice(2, 0, ...countryProxies); // 插入在自动选择、手动切换的后面
   defaultProxiesDirect.splice(2, 0, ...countryProxies);
 
   // 处理落地
@@ -945,8 +945,8 @@ function main(config) {
     let idx = defaultProxies.indexOf("节点选择");
     defaultProxies.splice(idx + 1, 0, "落地节点", "直连家宽"); //插入到节点选择之后
 
-    defaultSelector.unshift("落地节点", "直连家宽");
-    defaultFallback.unshift("落地节点", "直连家宽");
+    defaultSelector.splice(2, 0, "落地节点", "直连家宽"); // 插入在自动选择、手动切换之后
+    defaultFallback.push("落地节点", "直连家宽");
 
     idx = globalProxies.indexOf("节点选择");
     globalProxies.splice(idx + 1, 0, ...["落地节点", "直连家宽", "前置代理"]); //插入到节点选择之后
@@ -1000,9 +1000,9 @@ function main(config) {
   // 添加大流量下载分组
   const highTrafficName = "大流量下载";
   globalProxies.push(highTrafficName);
-  // 插入到靠前位置
+  // 插入到自动选择、手动切换之后
   defaultProxies.splice(1, 0, highTrafficName);
-  defaultSelector.splice(1, 0, highTrafficName);
+  defaultSelector.splice(2, 0, highTrafficName);
   defaultProxiesDirect.splice(2, 0, highTrafficName);
 
   const countryProxyGroups = buildCountryProxyGroups(targetCountryList);
