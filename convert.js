@@ -273,6 +273,7 @@ const rules = [
   "GEOIP,LAN,全球直连,no-resolve",
   "GEOIP,PRIVATE,全球直连,no-resolve",
   "DST-PORT,22,SSH(22端口)",
+  "DST-PORT,5522,SSH(22端口)",
   "MATCH,节点选择",
 ];
 
@@ -370,7 +371,7 @@ function hasLowCost(config) {
 
 function parseCountries(config) {
   const proxies = config.proxies || [];
-  const ispRegex = /家宽|家庭|家庭宽带|商宽|商业宽带|星链|Starlink|落地/i; // 需要排除的关键字
+  const ispRegex = /家宽|家庭|家庭宽带|商宽|商业宽带|星链|Starlink|落地|\[li\]|极限白嫖/i; // 需要排除的关键字
 
   // 用来累计各国节点数
   const countryCounts = Object.create(null);
@@ -524,7 +525,7 @@ function buildCountryProxyGroups(countryList) {
         "include-all": true,
         filter: pattern,
         "exclude-filter":
-          "(?i)家宽|家庭|家庭宽带|商宽|商业宽带|星链|Starlink|落地|0.[0-5]|低倍率|省流|大流量|实验性",
+          "(?i)家宽|家庭|家庭宽带|商宽|商业宽带|星链|Starlink|落地|0.[0-5]|低倍率|省流|大流量|实验性|\\[li\\]|极限白嫖",
         type: loadBalance ? "load-balance" : "url-test",
       };
 
@@ -569,9 +570,9 @@ function buildProxyGroups(countryList, countryProxyGroups, providerProxyGroups, 
       type: "url-test",
       "include-all": true,
       "exclude-filter":
-        "(?i)家宽|家庭|家庭宽带|商宽|商业宽带|星链|Starlink|落地|0.[0-5]|低倍率|省流|大流量|实验性",
+        "(?i)家宽|家庭|家庭宽带|商宽|商业宽带|星链|Starlink|落地|0.[0-5]|低倍率|省流|大流量|实验性|\\[li\\]|极限白嫖",
       url: "http://www.gstatic.com/generate_204",
-      interval: 500,
+      interval: 300,
       tolerance: 20,
       lazy: true,
     },
@@ -583,7 +584,7 @@ function buildProxyGroups(countryList, countryProxyGroups, providerProxyGroups, 
           "include-all": true,
           filter:
             "(?i)(家宽|家庭|家庭宽带|商宽|商业宽带|星链|Starlink|落地)",
-          "exclude-filter": "(?i)\\[直连\\]",
+          "exclude-filter": "(?i)\\[直连\\]|\\[li\\]|极限白嫖",
         }
       : null,
     landing
@@ -593,7 +594,7 @@ function buildProxyGroups(countryList, countryProxyGroups, providerProxyGroups, 
           type: "select",
           "include-all": true,
           "exclude-filter":
-            "(?i)家宽|家庭|家庭宽带|商宽|商业宽带|星链|Starlink|落地",
+            "(?i)家宽|家庭|家庭宽带|商宽|商业宽带|星链|Starlink|落地|\\[li\\]|极限白嫖",
           proxies: ["中转代理", ...defaultSelector.filter(p => p !== "落地节点" && p !== "直连家宽")],
         }
       : null,
@@ -627,12 +628,18 @@ function buildProxyGroups(countryList, countryProxyGroups, providerProxyGroups, 
           type: loadBalance ? "load-balance" : "url-test",
           "include-all": true,
           filter: "(?i)0.[0-5]|低倍率|省流|大流量|实验性",
+          "exclude-filter": "(?i)\\[li\\]|极限白嫖",
+          url: "http://www.gstatic.com/generate_204",
+          interval: 300,
+          tolerance: 20,
+          lazy: true,
         }
       : null,
     {
       name: "手动切换",
       icon: "https://cdn.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/select.png",
       "include-all": true,
+      "exclude-filter": "(?i)\\[li\\]|极限白嫖",
       type: "select",
     },
     {
@@ -648,9 +655,10 @@ function buildProxyGroups(countryList, countryProxyGroups, providerProxyGroups, 
     {
       name: "中转代理",
       icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Auto.png",
-      type: "fallback",
+      type: loadBalance ? "load-balance" : "url-test",
       "include-all": true,
       filter: `(?i)${relayKeyword}`,
+      "exclude-filter": "(?i)\\[li\\]|极限白嫖",
       url: "http://www.gstatic.com/generate_204",
       interval: 300,
       tolerance: 20,
@@ -662,6 +670,7 @@ function buildProxyGroups(countryList, countryProxyGroups, providerProxyGroups, 
       type: "fallback",
       "include-all": true,
       filter: "(?i)google",
+      "exclude-filter": "(?i)\\[li\\]|极限白嫖",
       url: "http://www.gstatic.com/generate_204",
       interval: 300,
       tolerance: 20,
@@ -671,7 +680,6 @@ function buildProxyGroups(countryList, countryProxyGroups, providerProxyGroups, 
       name: "静态资源",
       icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Cloudflare.png",
       type: "select",
-      "include-all": true,
       proxies: hasCF
         ? ["Cloudflare节点", "节点选择", "手动切换", "全球直连"]
         : defaultProxies,
@@ -787,7 +795,6 @@ function buildProxyGroups(countryList, countryProxyGroups, providerProxyGroups, 
       name: "新浪微博",
       icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Weibo.png",
       type: "select",
-      "include-all": true,
       proxies: defaultProxiesDirect,
     },
     {
@@ -836,7 +843,7 @@ function buildProxyGroups(countryList, countryProxyGroups, providerProxyGroups, 
       name: "SSH(22端口)",
       icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Server.png",
       type: "select",
-      proxies: defaultProxies,
+      proxies: defaultProxiesDirect,
     },
     {
       name: "Steam修复",
@@ -880,6 +887,11 @@ function buildProxyGroups(countryList, countryProxyGroups, providerProxyGroups, 
       type: loadBalance ? "load-balance" : "url-test",
       "include-all": true,
       filter: vpsKeywords,
+      "exclude-filter": "(?i)\\[li\\]|极限白嫖",
+      url: "http://www.gstatic.com/generate_204",
+      interval: 300,
+      tolerance: 20,
+      lazy: true,
     },
     ...countryProxyGroups,
     ...providerProxyGroups,
@@ -906,8 +918,8 @@ function main(config) {
   // 修改默认代理组
   const targetCountryList = [];
   for (const { country, count } of countryInfo) {
-    if (count > 2) {
-      // 仅为节点数大于 2 的地区创建节点组
+    if (count >= 1) {
+      // 为存在节点的地区创建节点组
       const groupName = `${country}节点`;
       globalProxies.push(groupName);
       countryProxies.push(groupName);
@@ -968,8 +980,8 @@ function main(config) {
   const providerProxies = [];
 
   for (const { provider, count } of providerInfo) {
-    if (count > 2) {
-      // 仅为节点数大于 2 的供应商创建节点组
+    if (count >= 2) {
+      // 为节点数 >= 2 的供应商创建节点组
       const groupName = `[${provider}]`;
       globalProxies.push(groupName);
       providerProxies.push(groupName);
