@@ -220,6 +220,11 @@ const ruleProviders = {
 };
 
 const rules = [
+  "DST-PORT,22,SSH(22端口)",
+  "DST-PORT,5522,SSH(22端口)",
+  "DOMAIN-SUFFIX,tailscale.com,全球直连",
+  "DOMAIN-SUFFIX,tailscale.io,全球直连",
+  "IP-CIDR,100.64.0.0/10,全球直连,no-resolve",
   "RULE-SET,ADBlock,广告拦截",
   "RULE-SET,WhatsApp,WhatsApp",
   "GEOSITE,FACEBOOK,节点选择",
@@ -266,16 +271,12 @@ const rules = [
   "GEOSITE,PIKPAK,PikPak",
   "GEOSITE,CN,全球直连",
   "GEOSITE,PRIVATE,全球直连",
-  "DOMAIN-SUFFIX,tailscale.com,全球直连",
-  "DOMAIN-SUFFIX,tailscale.io,全球直连",
   "GEOIP,NETFLIX,Netflix,no-resolve",
   "GEOIP,GOOGLE,Google,no-resolve",
   "GEOIP,TELEGRAM,Telegram,no-resolve",
   "GEOIP,CN,全球直连,no-resolve",
   "GEOIP,LAN,全球直连,no-resolve",
   "GEOIP,PRIVATE,全球直连,no-resolve",
-  "DST-PORT,22,SSH(22端口)",
-  "DST-PORT,5522,SSH(22端口)",
   "MATCH,节点选择",
 ];
 
@@ -989,10 +990,10 @@ function main(config) {
     }
   }
 
-  // 将供应商代理组添加到默认代理组选项中
+  // 将供应商代理组添加到默认代理组选项中（故障转移排除 [li] 免费节点池）
   defaultProxies.push(...providerProxies);
   defaultSelector.push(...providerProxies);
-  defaultFallback.push(...providerProxies);
+  defaultFallback.push(...providerProxies.filter((p) => p !== "[li]"));
   defaultProxiesDirect.push(...providerProxies);
 
   // 添加大流量下载分组
