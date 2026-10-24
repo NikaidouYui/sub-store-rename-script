@@ -220,10 +220,11 @@ const ruleProviders = {
 };
 
 const rules = [
-  "DST-PORT,22,SSH(22端口)",
+  "DST-PORT,2200,全球直连",
   "DST-PORT,5522,SSH(22端口)",
-  "DOMAIN-SUFFIX,tailscale.com,全球直连",
-  "DOMAIN-SUFFIX,tailscale.io,全球直连",
+  "DST-PORT,22,SSH(22端口)",
+  "DOMAIN-SUFFIX,tailscale.com,SSH(22端口)",
+  "DOMAIN-SUFFIX,tailscale.io,SSH(22端口)",
   "IP-CIDR,100.64.0.0/10,全球直连,no-resolve",
   "RULE-SET,ADBlock,广告拦截",
   "RULE-SET,WhatsApp,WhatsApp",
@@ -844,7 +845,7 @@ function buildProxyGroups(countryList, countryProxyGroups, providerProxyGroups, 
       name: "SSH(22端口)",
       icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Server.png",
       type: "select",
-      proxies: defaultProxiesDirect,
+      proxies: defaultProxies,
     },
     {
       name: "Steam修复",
