@@ -266,6 +266,8 @@ const rules = [
   "GEOSITE,PIKPAK,PikPak",
   "GEOSITE,CN,全球直连",
   "GEOSITE,PRIVATE,全球直连",
+  "DOMAIN-SUFFIX,tailscale.com,全球直连",
+  "DOMAIN-SUFFIX,tailscale.io,全球直连",
   "GEOIP,NETFLIX,Netflix,no-resolve",
   "GEOIP,GOOGLE,Google,no-resolve",
   "GEOIP,TELEGRAM,Telegram,no-resolve",
